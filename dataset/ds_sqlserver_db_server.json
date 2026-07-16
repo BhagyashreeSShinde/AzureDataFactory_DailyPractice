@@ -1,0 +1,17 @@
+{
+	"name": "ds_sqlserver_db_server",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SqlServerdb_onpremises_Bhagya_db",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "tgt_sales"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

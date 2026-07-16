@@ -1,0 +1,17 @@
+{
+	"name": "ds_azuresqlsb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azuresql_clintrail",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "RAW",
+			"table": "raw_patients"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
