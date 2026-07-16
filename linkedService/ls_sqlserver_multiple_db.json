@@ -1,0 +1,26 @@
+{
+	"name": "ls_sqlserver_multiple_db",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"pLsDatabase": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "localhost\\SQLEXPRESS",
+			"database": "@{linkedService().pLsDatabase}",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "adf_login",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIwMjIxYmQxYS01ZTYyLTRiNDYtOTYyYy1jMGI4OGY5Y2FkNTMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "shir-local-computer",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

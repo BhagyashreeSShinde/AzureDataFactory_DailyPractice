@@ -1,0 +1,17 @@
+{
+	"name": "ds_azuresql_clintrail",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azuresql_clintrail",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "RAW",
+			"table": "emp"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

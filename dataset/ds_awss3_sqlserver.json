@@ -1,0 +1,17 @@
+{
+	"name": "ds_awss3_sqlserver",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqlserverdb_healthconnect_raw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "invoice"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

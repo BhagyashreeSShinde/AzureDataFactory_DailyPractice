@@ -1,0 +1,31 @@
+{
+	"name": "ls_sqlserver_param",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"parameters": {
+			"pLsServerName": {
+				"type": "string",
+				"defaultValue": "localhost\\SQLEXPRESS"
+			},
+			"pLsDatabaseName": {
+				"type": "string",
+				"defaultValue": "dev_clintrail_edc_src"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "@{linkedService().pLsServerName}",
+			"database": "@{linkedService().pLsDatabaseName}",
+			"encrypt": "optional",
+			"trustServerCertificate": false,
+			"authenticationType": "SQL",
+			"userName": "adf_login",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4NGZmYjVjOC03MTMxLTQwMmUtOGQzNS02ODdlNzc3ZDE2OTQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "shir-local-computer",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

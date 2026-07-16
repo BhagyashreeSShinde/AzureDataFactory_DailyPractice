@@ -1,0 +1,17 @@
+{
+	"name": "ds_sales_sqlserverdb",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_sqlserverdb_healthconnect_raw",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "sales"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
