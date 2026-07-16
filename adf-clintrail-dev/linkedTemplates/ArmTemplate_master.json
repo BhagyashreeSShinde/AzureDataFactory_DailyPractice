@@ -1,0 +1,270 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adf-clintrail-dev"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SqlServerdb_onpremises_Bhagya_db'"
+		},
+		"amazons3_sqlserver_secretAccessKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'secretAccessKey' of 'amazons3_sqlserver'"
+		},
+		"ls_adls_gen2_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_adls_gen2'"
+		},
+		"ls_azuresql_clintrail_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_azuresql_clintrail'"
+		},
+		"ls_sqlserver_multiple_db_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_sqlserver_multiple_db'"
+		},
+		"ls_sqlserver_param_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_sqlserver_param'"
+		},
+		"ls_sqlserverdb_healthconnect_raw_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'ls_sqlserverdb_healthconnect_raw'"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost\\SQLEXPRESS"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "Bhagya_db"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
+			"type": "string",
+			"defaultValue": "AKIAZGGSSLFKW6U3ZEV7"
+		},
+		"ls_adls_gen2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://stclinicaltraildev.dfs.core.windows.net/"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "sqldb-clintrail-dev.database.windows.net"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "sqldb-clintrial-dev"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "CloudSA8224d4d2"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost\\SQLEXPRESS"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().pLsDatabase}"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adf_login"
+		},
+		"ls_sqlserver_param_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "@{linkedService().pLsServerName}"
+		},
+		"ls_sqlserver_param_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "@{linkedService().pLsDatabaseName}"
+		},
+		"ls_sqlserver_param_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "adf_login"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "localhost\\SQLEXPRESS"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "dev_HealthConnect_raw"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"amazons3_sqlserver_secretAccessKey": {
+						"value": "[parameters('amazons3_sqlserver_secretAccessKey')]"
+					},
+					"ls_adls_gen2_accountKey": {
+						"value": "[parameters('ls_adls_gen2_accountKey')]"
+					},
+					"ls_azuresql_clintrail_password": {
+						"value": "[parameters('ls_azuresql_clintrail_password')]"
+					},
+					"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
+						"value": "[parameters('amazons3_sqlserver_properties_typeProperties_accessKeyId')]"
+					},
+					"ls_adls_gen2_properties_typeProperties_url": {
+						"value": "[parameters('ls_adls_gen2_properties_typeProperties_url')]"
+					},
+					"ls_azuresql_clintrail_properties_typeProperties_server": {
+						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_server')]"
+					},
+					"ls_azuresql_clintrail_properties_typeProperties_database": {
+						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_database')]"
+					},
+					"ls_azuresql_clintrail_properties_typeProperties_userName": {
+						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"SqlServerdb_onpremises_Bhagya_db_password": {
+						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_password')]"
+					},
+					"ls_sqlserver_multiple_db_password": {
+						"value": "[parameters('ls_sqlserver_multiple_db_password')]"
+					},
+					"ls_sqlserver_param_password": {
+						"value": "[parameters('ls_sqlserver_param_password')]"
+					},
+					"ls_sqlserverdb_healthconnect_raw_password": {
+						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_password')]"
+					},
+					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
+						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server')]"
+					},
+					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_database": {
+						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_database')]"
+					},
+					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName": {
+						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName')]"
+					},
+					"ls_sqlserver_multiple_db_properties_typeProperties_server": {
+						"value": "[parameters('ls_sqlserver_multiple_db_properties_typeProperties_server')]"
+					},
+					"ls_sqlserver_multiple_db_properties_typeProperties_database": {
+						"value": "[parameters('ls_sqlserver_multiple_db_properties_typeProperties_database')]"
+					},
+					"ls_sqlserver_multiple_db_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sqlserver_multiple_db_properties_typeProperties_userName')]"
+					},
+					"ls_sqlserver_param_properties_typeProperties_server": {
+						"value": "[parameters('ls_sqlserver_param_properties_typeProperties_server')]"
+					},
+					"ls_sqlserver_param_properties_typeProperties_database": {
+						"value": "[parameters('ls_sqlserver_param_properties_typeProperties_database')]"
+					},
+					"ls_sqlserver_param_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sqlserver_param_properties_typeProperties_userName')]"
+					},
+					"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_server": {
+						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_properties_typeProperties_server')]"
+					},
+					"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_database": {
+						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_properties_typeProperties_database')]"
+					},
+					"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
+						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-clintrail-dev_ArmTemplate_0')]"
+			]
+		},
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_2",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_2.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-clintrail-dev_ArmTemplate_1')]"
+			]
+		},
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_3",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_3.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-clintrail-dev_ArmTemplate_2')]"
+			]
+		}
+	]
+}

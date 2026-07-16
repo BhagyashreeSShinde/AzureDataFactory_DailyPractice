@@ -1,0 +1,87 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf-clintrail-dev"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_password": {
+			"value": ""
+		},
+		"amazons3_sqlserver_secretAccessKey": {
+			"value": ""
+		},
+		"ls_adls_gen2_accountKey": {
+			"value": ""
+		},
+		"ls_azuresql_clintrail_password": {
+			"value": ""
+		},
+		"ls_sqlserver_multiple_db_password": {
+			"value": ""
+		},
+		"ls_sqlserver_param_password": {
+			"value": ""
+		},
+		"ls_sqlserverdb_healthconnect_raw_password": {
+			"value": ""
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
+			"value": "localhost\\SQLEXPRESS"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_database": {
+			"value": "Bhagya_db"
+		},
+		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName": {
+			"value": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
+			"value": "AKIAZGGSSLFKW6U3ZEV7"
+		},
+		"ls_adls_gen2_properties_typeProperties_url": {
+			"value": "https://stclinicaltraildev.dfs.core.windows.net/"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_server": {
+			"value": "sqldb-clintrail-dev.database.windows.net"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_database": {
+			"value": "sqldb-clintrial-dev"
+		},
+		"ls_azuresql_clintrail_properties_typeProperties_userName": {
+			"value": "CloudSA8224d4d2"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
+			"value": "localhost\\SQLEXPRESS"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_database": {
+			"value": "@{linkedService().pLsDatabase}"
+		},
+		"ls_sqlserver_multiple_db_properties_typeProperties_userName": {
+			"value": "adf_login"
+		},
+		"ls_sqlserver_param_properties_typeProperties_server": {
+			"value": "@{linkedService().pLsServerName}"
+		},
+		"ls_sqlserver_param_properties_typeProperties_database": {
+			"value": "@{linkedService().pLsDatabaseName}"
+		},
+		"ls_sqlserver_param_properties_typeProperties_userName": {
+			"value": "adf_login"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_server": {
+			"value": "localhost\\SQLEXPRESS"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_database": {
+			"value": "dev_HealthConnect_raw"
+		},
+		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
+			"value": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
