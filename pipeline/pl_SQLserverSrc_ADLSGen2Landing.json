@@ -15,6 +15,21 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_SqlServerTablesParam",
+						"type": "DatasetReference",
+						"parameters": {
+							"pDsServerName": "localhost\\SQLEXPRESS",
+							"pDsDatabaseName": "dev_clintrail_edc_src",
+							"pDsSchemaName": "edcsrcmetadata",
+							"pDsTableName": "srcEdcClintrailToLandControl"
+						}
+					},
 					"firstRowOnly": false
 				}
 			},
