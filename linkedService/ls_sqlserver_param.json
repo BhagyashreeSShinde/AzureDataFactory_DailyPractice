@@ -4,12 +4,10 @@
 	"properties": {
 		"parameters": {
 			"pLsServerName": {
-				"type": "string",
-				"defaultValue": "localhost\\SQLEXPRESS"
+				"type": "string"
 			},
 			"pLsDatabaseName": {
-				"type": "string",
-				"defaultValue": "dev_clintrail_edc_src"
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -21,7 +19,7 @@
 			"trustServerCertificate": false,
 			"authenticationType": "SQL",
 			"userName": "adf_login",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI4NGZmYjVjOC03MTMxLTQwMmUtOGQzNS02ODdlNzc3ZDE2OTQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI2YmI4M2ZhOC00MDY1LTRkODktYTlkMi0zNjQ5MWY5NGQ5NzUiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "shir-local-computer",
