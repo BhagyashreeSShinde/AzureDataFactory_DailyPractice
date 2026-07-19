@@ -15,10 +15,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'secretAccessKey' of 'amazons3_sqlserver'"
 		},
-		"ls_adls_gen2_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'ls_adls_gen2'"
-		},
 		"ls_azuresql_clintrail_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_azuresql_clintrail'"
@@ -27,13 +23,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserver_multiple_db'"
 		},
-		"ls_sqlserver_param_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'ls_sqlserver_param'"
-		},
 		"ls_sqlserverdb_healthconnect_raw_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserverdb_healthconnect_raw'"
+		},
+		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adls-clintrail-dev.vault.azure.net/"
+		},
+		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"type": "string",
@@ -102,12 +102,291 @@
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_SQLserverSrc_ADLSGen2Landing')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "LookupSQLServerControlTable",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_SqlServerTablesParam",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsServerName": "localhost\\SQLEXPRESS",
+									"pDsDatabaseName": "dev_clintrail_edc_src",
+									"pDsSchemaName": "edcsrcmetadata",
+									"pDsTableName": "srcEdcClintrailToLandControl"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "LookupSQLServerControlTable",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('LookupSQLServerControlTable').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Copydata_sqlserver_landing",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "@{item().SrcSchemaName}.@{item().SrcTableName}"
+										},
+										{
+											"name": "Destination",
+											"value": "@{item().LandingContainerName}/@{concat(item().SrcSchemaName,'/',item().SrcTableName,'/ingest_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))}/@{concat(item().SrcTableName, '_', formatDateTime(utcNow(),'yyyyMMddHHmmss'), '.parquet')}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@if(equals(item().IngestionType,'Incremental'),\n    concat('SELECT * FROM ',item().SrcSchemaName,'.',item().SrcTableName,\n           ' WHERE ',coalesce(item().WatermarkColName,''),\n           ' > ''',coalesce(string(item().WatermarkColValue),''),''''),\n    concat('SELECT * FROM ',item().SrcSchemaName,'.',item().SrcTableName))",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "ParquetSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "ParquetWriteSettings"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "ds_SqlServerTablesParam",
+											"type": "DatasetReference",
+											"parameters": {
+												"pDsServerName": {
+													"value": "@item().SrcServerName",
+													"type": "Expression"
+												},
+												"pDsDatabaseName": {
+													"value": "@item().SrcDatabaseName",
+													"type": "Expression"
+												},
+												"pDsSchemaName": {
+													"value": "@item().SrcSchemaName",
+													"type": "Expression"
+												},
+												"pDsTableName": {
+													"value": "@item().SrcTableName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "ds_adls_clinical_param",
+											"type": "DatasetReference",
+											"parameters": {
+												"pDsContainerName": {
+													"value": "@item().LandingContainerName",
+													"type": "Expression"
+												},
+												"pDsFolderName": {
+													"value": "@concat(item().SrcSchemaName,'/',item().SrcTableName,'/ingest_date=',formatDateTime(utcNow(),'yyyy-MM--dd'))",
+													"type": "Expression"
+												},
+												"pDsFileName": {
+													"value": "@concat(item().SrcTableName,'_',formatDateTime(utcNow(),'yyyyMMddHHmmss'), '.parquet')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "LookupGetMaxMetaData",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Copydata_sqlserver_landing",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@concat('SELECT MAX([', coalesce(item().WatermarkColName, 'MODIFIED_TS'), ']) AS NewWatermark FROM ', item().SrcSchemaName, '.', item().SrcTableName)\n",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"dataset": {
+											"referenceName": "ds_SqlServerTablesParam",
+											"type": "DatasetReference",
+											"parameters": {
+												"pDsServerName": {
+													"value": "@item().SrcServerName",
+													"type": "Expression"
+												},
+												"pDsDatabaseName": {
+													"value": "@item().SrcDatabaseName",
+													"type": "Expression"
+												},
+												"pDsSchemaName": {
+													"value": "@item().SrcSchemaName",
+													"type": "Expression"
+												},
+												"pDsTableName": {
+													"value": "@item().SrcTableName",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								},
+								{
+									"name": "Stored procedureUpdtMxModifiedDt",
+									"type": "SqlServerStoredProcedure",
+									"dependsOn": [
+										{
+											"activity": "LookupGetMaxMetaData",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"storedProcedureName": "[[edcsrcmetadata].[usp_UpdateMxWatermark]",
+										"storedProcedureParameters": {
+											"MetadataId": {
+												"value": {
+													"value": "@item().MetadataId",
+													"type": "Expression"
+												},
+												"type": "Int32"
+											},
+											"NewWatermarkValue": {
+												"value": {
+													"value": "@activity('LookupGetMaxMetaData').output.firstRow.NewWatermark",
+													"type": "Expression"
+												},
+												"type": "DateTime"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_sqlserver_param",
+										"type": "LinkedServiceReference",
+										"parameters": {
+											"pLsServerName": {
+												"value": "@item().SrcServerName",
+												"type": "Expression"
+											},
+											"pLsDatabaseName": {
+												"value": "@item().SrcDatabaseName",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "dev_clintrail/SQLServerSrc_ADLSGen2Landing"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_SqlServerTablesParam')]",
+				"[concat(variables('factoryId'), '/datasets/ds_adls_clinical_param')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqlserver_param')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/pl_adls_dm_csv_srcTo_raw')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -3571,6 +3850,57 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_SqlServerTablesParam')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_sqlserver_param",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"pLsServerName": {
+							"value": "@dataset().pDsServerName",
+							"type": "Expression"
+						},
+						"pLsDatabaseName": {
+							"value": "@dataset().pDsDatabaseName",
+							"type": "Expression"
+						}
+					}
+				},
+				"parameters": {
+					"pDsServerName": {
+						"type": "string"
+					},
+					"pDsDatabaseName": {
+						"type": "string"
+					},
+					"pDsSchemaName": {
+						"type": "string"
+					},
+					"pDsTableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().pDsSchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().pDsTableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_sqlserver_param')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_adls_bin_sourcefiles')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5357,6 +5687,32 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVaultAdlsGen2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault_SQLServer')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault_SQLServer_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerdb_onpremises_Bhagya_db')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5413,12 +5769,18 @@
 				"typeProperties": {
 					"url": "[parameters('ls_adls_gen2_properties_typeProperties_url')]",
 					"accountKey": {
-						"type": "SecureString",
-						"value": "[parameters('ls_adls_gen2_accountKey')]"
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "AdlsGen2"
 					}
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ls_azuresql_clintrail')]",
@@ -5500,8 +5862,12 @@
 					"authenticationType": "SQL",
 					"userName": "[parameters('ls_sqlserver_param_properties_typeProperties_userName')]",
 					"password": {
-						"type": "SecureString",
-						"value": "[parameters('ls_sqlserver_param_password')]"
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault_SQLServer",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "SqlServerPass"
 					}
 				},
 				"connectVia": {
@@ -5510,7 +5876,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/shir-local-computer')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/shir-local-computer')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault_SQLServer')]"
 			]
 		},
 		{
@@ -5548,6 +5915,65 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_adls_clinical_param')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gen2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"pDsContainerName": {
+						"type": "string"
+					},
+					"pDsFolderName": {
+						"type": "string"
+					},
+					"pDsFileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().pDsFileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().pDsFolderName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().pDsContainerName",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gen2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
 			},
 			"dependsOn": []
 		}

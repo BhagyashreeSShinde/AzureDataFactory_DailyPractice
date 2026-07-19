@@ -11,20 +11,20 @@
 		"amazons3_sqlserver_secretAccessKey": {
 			"value": ""
 		},
-		"ls_adls_gen2_accountKey": {
-			"value": ""
-		},
 		"ls_azuresql_clintrail_password": {
 			"value": ""
 		},
 		"ls_sqlserver_multiple_db_password": {
 			"value": ""
 		},
-		"ls_sqlserver_param_password": {
-			"value": ""
-		},
 		"ls_sqlserverdb_healthconnect_raw_password": {
 			"value": ""
+		},
+		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
+			"value": "https://kv-adls-clintrail-dev.vault.azure.net/"
+		},
+		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
+			"value": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"value": "localhost\\SQLEXPRESS"
@@ -76,6 +76,9 @@
 		},
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"value": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
 		}
 	}
 }

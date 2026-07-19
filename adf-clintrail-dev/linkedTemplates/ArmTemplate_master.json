@@ -15,10 +15,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'secretAccessKey' of 'amazons3_sqlserver'"
 		},
-		"ls_adls_gen2_accountKey": {
-			"type": "secureString",
-			"metadata": "Secure string for 'accountKey' of 'ls_adls_gen2'"
-		},
 		"ls_azuresql_clintrail_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_azuresql_clintrail'"
@@ -27,13 +23,17 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserver_multiple_db'"
 		},
-		"ls_sqlserver_param_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'ls_sqlserver_param'"
-		},
 		"ls_sqlserverdb_healthconnect_raw_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserverdb_healthconnect_raw'"
+		},
+		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adls-clintrail-dev.vault.azure.net/"
+		},
+		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"type": "string",
@@ -103,6 +103,10 @@
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
 		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -133,17 +137,26 @@
 					"amazons3_sqlserver_secretAccessKey": {
 						"value": "[parameters('amazons3_sqlserver_secretAccessKey')]"
 					},
-					"ls_adls_gen2_accountKey": {
-						"value": "[parameters('ls_adls_gen2_accountKey')]"
-					},
 					"ls_azuresql_clintrail_password": {
 						"value": "[parameters('ls_azuresql_clintrail_password')]"
 					},
+					"SqlServerdb_onpremises_Bhagya_db_password": {
+						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_password')]"
+					},
+					"ls_sqlserver_multiple_db_password": {
+						"value": "[parameters('ls_sqlserver_multiple_db_password')]"
+					},
+					"ls_sqlserverdb_healthconnect_raw_password": {
+						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_password')]"
+					},
+					"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl')]"
+					},
+					"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_SQLServer_properties_typeProperties_baseUrl')]"
+					},
 					"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('amazons3_sqlserver_properties_typeProperties_accessKeyId')]"
-					},
-					"ls_adls_gen2_properties_typeProperties_url": {
-						"value": "[parameters('ls_adls_gen2_properties_typeProperties_url')]"
 					},
 					"ls_azuresql_clintrail_properties_typeProperties_server": {
 						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_server')]"
@@ -153,36 +166,9 @@
 					},
 					"ls_azuresql_clintrail_properties_typeProperties_userName": {
 						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_userName')]"
-					}
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "adf-clintrail-dev_ArmTemplate_1",
-			"type": "Microsoft.Resources/deployments",
-			"apiVersion": "2024-03-01",
-			"properties": {
-				"mode": "incremental",
-				"templateLink": {
-					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
-					"contentVersion": "1.0.0.0"
-				},
-				"parameters": {
-					"factoryName": {
-						"value": "[parameters('factoryName')]"
 					},
-					"SqlServerdb_onpremises_Bhagya_db_password": {
-						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_password')]"
-					},
-					"ls_sqlserver_multiple_db_password": {
-						"value": "[parameters('ls_sqlserver_multiple_db_password')]"
-					},
-					"ls_sqlserver_param_password": {
-						"value": "[parameters('ls_sqlserver_param_password')]"
-					},
-					"ls_sqlserverdb_healthconnect_raw_password": {
-						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_password')]"
+					"AzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
 					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server')]"
@@ -192,6 +178,9 @@
 					},
 					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName": {
 						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_userName')]"
+					},
+					"ls_adls_gen2_properties_typeProperties_url": {
+						"value": "[parameters('ls_adls_gen2_properties_typeProperties_url')]"
 					},
 					"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 						"value": "[parameters('ls_sqlserver_multiple_db_properties_typeProperties_server')]"
@@ -219,6 +208,24 @@
 					},
 					"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
 					}
 				}
 			},
@@ -264,6 +271,26 @@
 			},
 			"dependsOn": [
 				"[resourceId('Microsoft.Resources/deployments', 'adf-clintrail-dev_ArmTemplate_2')]"
+			]
+		},
+		{
+			"name": "adf-clintrail-dev_ArmTemplate_4",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2024-03-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_4.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adf-clintrail-dev_ArmTemplate_3')]"
 			]
 		}
 	]
