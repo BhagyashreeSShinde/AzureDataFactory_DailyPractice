@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserverdb_healthconnect_raw'"
 		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
+		},
 		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kv-adls-clintrail-dev.vault.azure.net/"
@@ -103,10 +107,6 @@
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
 		},
-		"AzureKeyVault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
-		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -149,6 +149,9 @@
 					"ls_sqlserverdb_healthconnect_raw_password": {
 						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_password')]"
 					},
+					"AzureKeyVault_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
+					},
 					"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl')]"
 					},
@@ -166,9 +169,6 @@
 					},
 					"ls_azuresql_clintrail_properties_typeProperties_userName": {
 						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_userName')]"
-					},
-					"AzureKeyVault_properties_typeProperties_baseUrl": {
-						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
 					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server')]"

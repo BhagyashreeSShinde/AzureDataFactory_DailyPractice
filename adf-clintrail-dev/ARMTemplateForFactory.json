@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'ls_sqlserverdb_healthconnect_raw'"
 		},
+		"AzureKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
+		},
 		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kv-adls-clintrail-dev.vault.azure.net/"
@@ -102,10 +106,6 @@
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
-		},
-		"AzureKeyVault_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
 		}
 	},
 	"variables": {
@@ -252,7 +252,7 @@
 													"type": "Expression"
 												},
 												"pDsFolderName": {
-													"value": "@concat(item().SrcSchemaName,'/',item().SrcTableName,'/ingest_date=',formatDateTime(utcNow(),'yyyy-MM--dd'))",
+													"value": "@concat(item().SrcSchemaName,'/',item().SrcTableName,'/ingest_date=',formatDateTime(utcNow(),'yyyy-MM-dd'))",
 													"type": "Expression"
 												},
 												"pDsFileName": {
@@ -3945,6 +3945,52 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ds_adls_clinical_param')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gen2",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"pDsContainerName": {
+						"type": "string"
+					},
+					"pDsFolderName": {
+						"type": "string"
+					},
+					"pDsFileName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": {
+							"value": "@dataset().pDsFileName",
+							"type": "Expression"
+						},
+						"folderPath": {
+							"value": "@dataset().pDsFolderName",
+							"type": "Expression"
+						},
+						"fileSystem": {
+							"value": "@dataset().pDsContainerName",
+							"type": "Expression"
+						}
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gen2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_adls_file_table')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5687,6 +5733,19 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureKeyVaultAdlsGen2')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5915,65 +5974,6 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ds_adls_clinical_param')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "ls_adls_gen2",
-					"type": "LinkedServiceReference"
-				},
-				"parameters": {
-					"pDsContainerName": {
-						"type": "string"
-					},
-					"pDsFolderName": {
-						"type": "string"
-					},
-					"pDsFileName": {
-						"type": "string"
-					}
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": {
-							"value": "@dataset().pDsFileName",
-							"type": "Expression"
-						},
-						"folderPath": {
-							"value": "@dataset().pDsFolderName",
-							"type": "Expression"
-						},
-						"fileSystem": {
-							"value": "@dataset().pDsContainerName",
-							"type": "Expression"
-						}
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gen2')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureKeyVault')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
-				}
 			},
 			"dependsOn": []
 		}
