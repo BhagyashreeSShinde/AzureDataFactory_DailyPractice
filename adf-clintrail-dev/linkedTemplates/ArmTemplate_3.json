@@ -13,6 +13,238 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_adls_sqlserver_daily_files')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "copy_adls_sqlserver_daily_files",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"additionalColumns": [
+									{
+										"name": "FilePath",
+										"value": "$$FILEPATH"
+									},
+									{
+										"name": "FileName",
+										"value": "$$FILENAME"
+									},
+									{
+										"name": "CurrentDateTime",
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										}
+									},
+									{
+										"name": "Country",
+										"value": "india"
+									}
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "sourcefiles/sales",
+									"wildcardFileName": "*sales*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlServerSink",
+								"preCopyScript": "TRUNCATE TABLE [dbo].[sales];",
+								"writeBehavior": "upsert",
+								"upsertSettings": {
+									"useTempDB": true,
+									"keys": [
+										"sale_id"
+									]
+								},
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "sale_id",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "sale_id",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "product",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "product",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "category",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "category",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "quantity",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "quantity",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "price",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "price",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "sale_date",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "sale_date",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "region",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "region",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "FilePath",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FilePath",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "FileName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "FileName",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "CurrentDateTime",
+											"type": "String"
+										},
+										"sink": {
+											"name": "CurrentDateTime",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									},
+									{
+										"source": {
+											"name": "Country",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Country",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_adls_sourcefiles_sales",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sales_sqlserverdb",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "daily_practice/Incremental_load"
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-07-10T07:12:59Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_awss3_sqlserver_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -2257,140 +2489,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2026-07-08T07:54:03Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_sqlserver_source_sink_param')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Copydata_source_target_param",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "SqlServerSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "ds_sqlserver_source_table_param",
-								"type": "DatasetReference",
-								"parameters": {
-									"pDsSourceServerName": {
-										"value": "@pipeline().parameters.pPISourceServerName",
-										"type": "Expression"
-									},
-									"pDsSourceDatabasename": {
-										"value": "@pipeline().parameters.pPISourceDatabasename",
-										"type": "Expression"
-									},
-									"pDsSourceSchemaName": {
-										"value": "@pipeline().parameters.pPISourceSchemaName",
-										"type": "Expression"
-									},
-									"pDsSourceTableName": {
-										"value": "@pipeline().parameters.pPISourceTableName",
-										"type": "Expression"
-									}
-								}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "ds_sqlserver_target_table_param",
-								"type": "DatasetReference",
-								"parameters": {
-									"pDsTargetServerName": {
-										"value": "@pipeline().parameters.pPITargetServerName",
-										"type": "Expression"
-									},
-									"pDsTargetDatabasename": {
-										"value": "@pipeline().parameters.pPITargetDatabasename",
-										"type": "Expression"
-									},
-									"pDsTargetSchemaName": {
-										"value": "@pipeline().parameters.pPITargetSchemaName",
-										"type": "Expression"
-									},
-									"pDsTargetTableName": {
-										"value": "@pipeline().parameters.pPITargetTableName",
-										"type": "Expression"
-									}
-								}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"pPISourceServerName": {
-						"type": "string",
-						"defaultValue": "localhost\\SQLEXPRESS"
-					},
-					"pPISourceDatabasename": {
-						"type": "string",
-						"defaultValue": "dev_clintrail_edc_src"
-					},
-					"pPISourceSchemaName": {
-						"type": "string",
-						"defaultValue": "src"
-					},
-					"pPISourceTableName": {
-						"type": "string",
-						"defaultValue": "CM"
-					},
-					"pPITargetServerName": {
-						"type": "string",
-						"defaultValue": "localhost\\SQLEXPRESS"
-					},
-					"pPITargetDatabasename": {
-						"type": "string",
-						"defaultValue": "Bhagya_db"
-					},
-					"pPITargetSchemaName": {
-						"type": "string",
-						"defaultValue": "dbo"
-					},
-					"pPITargetTableName": {
-						"type": "string",
-						"defaultValue": "CM"
-					}
-				},
-				"folder": {
-					"name": "daily_practice/paramterisation"
-				},
-				"annotations": [],
-				"lastPublishTime": "2026-07-16T01:44:32Z"
 			},
 			"dependsOn": []
 		}

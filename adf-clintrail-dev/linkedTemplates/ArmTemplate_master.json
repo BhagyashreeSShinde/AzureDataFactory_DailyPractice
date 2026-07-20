@@ -31,10 +31,6 @@
 			"type": "string",
 			"defaultValue": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
 		},
-		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://kv-adls-clintrail-dev.vault.azure.net/"
-		},
 		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
@@ -107,6 +103,14 @@
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
 		},
+		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv1-databricks.vault.azure.net/"
+		},
+		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0720-091705-xcsmdxgb"
+		},
 		"containerUri": {
 			"type": "string",
 			"metadata": "URI to storage account containing linked ARM templates"
@@ -152,9 +156,6 @@
 					"AzureKeyVault_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault_properties_typeProperties_baseUrl')]"
 					},
-					"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
-						"value": "[parameters('AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl')]"
-					},
 					"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault_SQLServer_properties_typeProperties_baseUrl')]"
 					},
@@ -169,6 +170,9 @@
 					},
 					"ls_azuresql_clintrail_properties_typeProperties_userName": {
 						"value": "[parameters('ls_azuresql_clintrail_properties_typeProperties_userName')]"
+					},
+					"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_databricks_properties_typeProperties_baseUrl')]"
 					},
 					"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 						"value": "[parameters('SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server')]"
@@ -208,6 +212,9 @@
 					},
 					"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 						"value": "[parameters('ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName')]"
+					},
+					"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('ls_databricks_clintrail_properties_typeProperties_existingClusterId')]"
 					}
 				}
 			},

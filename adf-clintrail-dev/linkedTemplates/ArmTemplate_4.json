@@ -13,6 +13,140 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_sqlserver_source_sink_param')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copydata_source_target_param",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "SqlServerSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ds_sqlserver_source_table_param",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsSourceServerName": {
+										"value": "@pipeline().parameters.pPISourceServerName",
+										"type": "Expression"
+									},
+									"pDsSourceDatabasename": {
+										"value": "@pipeline().parameters.pPISourceDatabasename",
+										"type": "Expression"
+									},
+									"pDsSourceSchemaName": {
+										"value": "@pipeline().parameters.pPISourceSchemaName",
+										"type": "Expression"
+									},
+									"pDsSourceTableName": {
+										"value": "@pipeline().parameters.pPISourceTableName",
+										"type": "Expression"
+									}
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "ds_sqlserver_target_table_param",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsTargetServerName": {
+										"value": "@pipeline().parameters.pPITargetServerName",
+										"type": "Expression"
+									},
+									"pDsTargetDatabasename": {
+										"value": "@pipeline().parameters.pPITargetDatabasename",
+										"type": "Expression"
+									},
+									"pDsTargetSchemaName": {
+										"value": "@pipeline().parameters.pPITargetSchemaName",
+										"type": "Expression"
+									},
+									"pDsTargetTableName": {
+										"value": "@pipeline().parameters.pPITargetTableName",
+										"type": "Expression"
+									}
+								}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pPISourceServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pPISourceDatabasename": {
+						"type": "string",
+						"defaultValue": "dev_clintrail_edc_src"
+					},
+					"pPISourceSchemaName": {
+						"type": "string",
+						"defaultValue": "src"
+					},
+					"pPISourceTableName": {
+						"type": "string",
+						"defaultValue": "CM"
+					},
+					"pPITargetServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pPITargetDatabasename": {
+						"type": "string",
+						"defaultValue": "Bhagya_db"
+					},
+					"pPITargetSchemaName": {
+						"type": "string",
+						"defaultValue": "dbo"
+					},
+					"pPITargetTableName": {
+						"type": "string",
+						"defaultValue": "CM"
+					}
+				},
+				"folder": {
+					"name": "daily_practice/paramterisation"
+				},
+				"annotations": [],
+				"lastPublishTime": "2026-07-16T01:44:32Z"
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_switch_Activity')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",

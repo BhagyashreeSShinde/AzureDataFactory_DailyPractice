@@ -23,9 +23,6 @@
 		"AzureKeyVault_properties_typeProperties_baseUrl": {
 			"value": "https://kv-adlsgen-clintrail-dev.vault.azure.net/"
 		},
-		"AzureKeyVaultAdlsGen2_properties_typeProperties_baseUrl": {
-			"value": "https://kv-adls-clintrail-dev.vault.azure.net/"
-		},
 		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 			"value": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
@@ -79,6 +76,12 @@
 		},
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"value": "DESKTOP-LK2VEJQ\\Dell"
+		},
+		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+			"value": "https://kv1-databricks.vault.azure.net/"
+		},
+		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
+			"value": "0720-091705-xcsmdxgb"
 		}
 	}
 }
