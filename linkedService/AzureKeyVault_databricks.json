@@ -1,0 +1,10 @@
+{
+	"name": "AzureKeyVault_databricks",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://kv1-databricks.vault.azure.net/"
+		}
+	}
+}
