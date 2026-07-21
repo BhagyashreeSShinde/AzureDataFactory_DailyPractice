@@ -26,6 +26,9 @@
 		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 			"value": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
+		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+			"value": "https://kv1-databricks.vault.azure.net/"
+		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"value": "localhost\\SQLEXPRESS"
 		},
@@ -49,6 +52,9 @@
 		},
 		"ls_azuresql_clintrail_properties_typeProperties_userName": {
 			"value": "CloudSA8224d4d2"
+		},
+		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
+			"value": "0720-091705-xcsmdxgb"
 		},
 		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 			"value": "localhost\\SQLEXPRESS"
@@ -76,12 +82,6 @@
 		},
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"value": "DESKTOP-LK2VEJQ\\Dell"
-		},
-		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
-			"value": "https://kv1-databricks.vault.azure.net/"
-		},
-		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-			"value": "0720-091705-xcsmdxgb"
 		}
 	}
 }

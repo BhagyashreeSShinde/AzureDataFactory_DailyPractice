@@ -35,6 +35,10 @@
 			"type": "string",
 			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
+		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://kv1-databricks.vault.azure.net/"
+		},
 		"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
 			"type": "string",
 			"defaultValue": "AKIAZGGSSLFKW6U3ZEV7"
@@ -51,10 +55,6 @@
 			"type": "string",
 			"defaultValue": "CloudSA8224d4d2"
 		},
-		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
-			"type": "string",
-			"defaultValue": "https://kv1-databricks.vault.azure.net/"
-		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "localhost\\SQLEXPRESS"
@@ -70,6 +70,10 @@
 		"ls_adls_gen2_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://stclinicaltraildev.dfs.core.windows.net/"
+		},
+		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0720-091705-xcsmdxgb"
 		},
 		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 			"type": "string",
@@ -106,10 +110,6 @@
 		"ls_sqlserverdb_healthconnect_raw_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "DESKTOP-LK2VEJQ\\Dell"
-		},
-		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0720-091705-xcsmdxgb"
 		}
 	},
 	"variables": {
@@ -138,6 +138,19 @@
 				"type": "AzureKeyVault",
 				"typeProperties": {
 					"baseUrl": "[parameters('AzureKeyVault_SQLServer_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault_databricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('AzureKeyVault_databricks_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -190,19 +203,6 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureKeyVault_databricks')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureKeyVault",
-				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVault_databricks_properties_typeProperties_baseUrl')]"
-				}
 			},
 			"dependsOn": []
 		},
@@ -423,6 +423,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_databricks_clintrail')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405604690945514.14.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault_databricks",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databricks"
+					},
+					"existingClusterId": "[parameters('ls_databricks_clintrail_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault_databricks')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_sqlserver_multiple_db')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -524,30 +548,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/shir-local-computer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ls_databricks_clintrail')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-7405604690945514.14.azuredatabricks.net",
-					"accessToken": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AzureKeyVault_databricks",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "databricks"
-					},
-					"existingClusterId": "[parameters('ls_databricks_clintrail_properties_typeProperties_existingClusterId')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault_databricks')]"
 			]
 		},
 		{
