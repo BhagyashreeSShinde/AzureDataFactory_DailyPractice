@@ -940,6 +940,85 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_bronze_silver_data_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup_bronze_silver_control_tab",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_sqlserver_source_table_param",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsSourceServerName": {
+										"value": "@pipeline().parameters.pPlServerName",
+										"type": "Expression"
+									},
+									"pDsSourceDatabasename": {
+										"value": "@pipeline().parameters.pPlDatabaseName",
+										"type": "Expression"
+									},
+									"pDsSourceSchemaName": {
+										"value": "@pipeline().parameters.pPlSchemaName",
+										"type": "Expression"
+									},
+									"pDsSourceTableName": {
+										"value": "@pipeline().parameters.pPTableName",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pPlServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pPlDatabaseName": {
+						"type": "string",
+						"defaultValue": "dev_clintrail_edc_src"
+					},
+					"pPlSchemaName": {
+						"type": "string",
+						"defaultValue": "edcsrcmetadata"
+					},
+					"pPTableName": {
+						"type": "string",
+						"defaultValue": "srcEdcBronzeToSilverControl"
+					}
+				},
+				"folder": {
+					"name": "dev_clintrail/bronze_silver_load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_sqlserver_source_table_param')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_copy_ind_usa_FilterActivity')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1915,10 +1994,22 @@
 								"referenceName": "ds_sqlserver_source_table_param",
 								"type": "DatasetReference",
 								"parameters": {
-									"pDsSourceServerName": "localhost\\SQLEXPRESS",
-									"pDsSourceDatabasename": "dev_clintrail_edc_src",
-									"pDsSourceSchemaName": "edcsrcmetadata",
-									"pDsSourceTableName": "srcEdcLandToBronzeControl"
+									"pDsSourceServerName": {
+										"value": "@pipeline().parameters.pPlServerName",
+										"type": "Expression"
+									},
+									"pDsSourceDatabasename": {
+										"value": "@pipeline().parameters.pPlDatabasename",
+										"type": "Expression"
+									},
+									"pDsSourceSchemaName": {
+										"value": "@pipeline().parameters.pPlSchemaname",
+										"type": "Expression"
+									},
+									"pDsSourceTableName": {
+										"value": "@pipeline().parameters.pPlTabelName",
+										"type": "Expression"
+									}
 								}
 							},
 							"firstRowOnly": false
@@ -1994,6 +2085,24 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pPlServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pPlDatabasename": {
+						"type": "string",
+						"defaultValue": "dev_clintrail_edc_src"
+					},
+					"pPlSchemaname": {
+						"type": "string",
+						"defaultValue": "edcsrcmetadata"
+					},
+					"pPlTabelName": {
+						"type": "string",
+						"defaultValue": "srcEdcLandToBronzeControl"
+					}
 				},
 				"folder": {
 					"name": "dev_clintrail/landing_bronze_load"
