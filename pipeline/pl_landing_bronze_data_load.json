@@ -22,8 +22,15 @@
 					},
 					"dataset": {
 						"referenceName": "ds_sqlserver_source_table_param",
-						"type": "DatasetReference"
-					}
+						"type": "DatasetReference",
+						"parameters": {
+							"pDsSourceServerName": "localhost\\SQLEXPRESS",
+							"pDsSourceDatabasename": "dev_clintrail_edc_src",
+							"pDsSourceSchemaName": "edcsrcmetadata",
+							"pDsSourceTableName": "srcEdcLandToBronzeControl"
+						}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
