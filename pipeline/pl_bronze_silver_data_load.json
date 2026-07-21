@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlSchemaName,\n    '] WHERE Enabled = ''True'''\n)",
+							"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlTableName,\n    '] WHERE Enabled = ''True'''\n)",
 							"type": "Expression"
 						},
 						"queryTimeout": "00:03:00",
@@ -41,11 +41,12 @@
 								"type": "Expression"
 							},
 							"pDsSourceTableName": {
-								"value": "@pipeline().parameters.pPTableName",
+								"value": "@pipeline().parameters.pPlTableName",
 								"type": "Expression"
 							}
 						}
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
@@ -62,7 +63,7 @@
 				"type": "string",
 				"defaultValue": "edcsrcmetadata"
 			},
-			"pPTableName": {
+			"pPlTableName": {
 				"type": "string",
 				"defaultValue": "srcEdcBronzeToSilverControl"
 			}
