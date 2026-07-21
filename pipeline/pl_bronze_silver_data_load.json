@@ -17,6 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlSchemaName,\n    '] WHERE Enabled = ''True'''\n)",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
