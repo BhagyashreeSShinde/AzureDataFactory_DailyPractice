@@ -24,10 +24,22 @@
 						"referenceName": "ds_sqlserver_source_table_param",
 						"type": "DatasetReference",
 						"parameters": {
-							"pDsSourceServerName": "localhost\\SQLEXPRESS",
-							"pDsSourceDatabasename": "dev_clintrail_edc_src",
-							"pDsSourceSchemaName": "edcsrcmetadata",
-							"pDsSourceTableName": "srcEdcLandToBronzeControl"
+							"pDsSourceServerName": {
+								"value": "@pipeline().parameters.pPlServerName",
+								"type": "Expression"
+							},
+							"pDsSourceDatabasename": {
+								"value": "@pipeline().parameters.pPlDatabasename",
+								"type": "Expression"
+							},
+							"pDsSourceSchemaName": {
+								"value": "@pipeline().parameters.pPlSchemaname",
+								"type": "Expression"
+							},
+							"pDsSourceTableName": {
+								"value": "@pipeline().parameters.pPlTabelName",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
@@ -101,6 +113,24 @@
 				}
 			}
 		],
+		"parameters": {
+			"pPlServerName": {
+				"type": "string",
+				"defaultValue": "localhost\\SQLEXPRESS"
+			},
+			"pPlDatabasename": {
+				"type": "string",
+				"defaultValue": "dev_clintrail_edc_src"
+			},
+			"pPlSchemaname": {
+				"type": "string",
+				"defaultValue": "edcsrcmetadata"
+			},
+			"pPlTabelName": {
+				"type": "string",
+				"defaultValue": "srcEdcLandToBronzeControl"
+			}
+		},
 		"folder": {
 			"name": "dev_clintrail/landing_bronze_load"
 		},
