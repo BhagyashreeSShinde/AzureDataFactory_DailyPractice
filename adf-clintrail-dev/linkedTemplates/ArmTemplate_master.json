@@ -35,9 +35,9 @@
 			"type": "string",
 			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
-		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+		"AzureKeyVault_datbricks_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://kv1-databricks.vault.azure.net/"
+			"defaultValue": "https://kv-databricks-clintrail.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"type": "string",
@@ -59,6 +59,10 @@
 			"type": "string",
 			"defaultValue": "https://stclinicaltraildev.dfs.core.windows.net/"
 		},
+		"ls_azure_databricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0720-155521-ynlqv44b"
+		},
 		"ls_azuresql_clintrail_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "sqldb-clintrail-dev.database.windows.net"
@@ -70,10 +74,6 @@
 		"ls_azuresql_clintrail_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "CloudSA8224d4d2"
-		},
-		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0720-091705-xcsmdxgb"
 		},
 		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 			"type": "string",
@@ -159,8 +159,8 @@
 					"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 						"value": "[parameters('AzureKeyVault_SQLServer_properties_typeProperties_baseUrl')]"
 					},
-					"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
-						"value": "[parameters('AzureKeyVault_databricks_properties_typeProperties_baseUrl')]"
+					"AzureKeyVault_datbricks_properties_typeProperties_baseUrl": {
+						"value": "[parameters('AzureKeyVault_datbricks_properties_typeProperties_baseUrl')]"
 					},
 					"amazons3_sqlserver_properties_typeProperties_accessKeyId": {
 						"value": "[parameters('amazons3_sqlserver_properties_typeProperties_accessKeyId')]"
@@ -186,8 +186,8 @@
 					"ls_adls_gen2_properties_typeProperties_url": {
 						"value": "[parameters('ls_adls_gen2_properties_typeProperties_url')]"
 					},
-					"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-						"value": "[parameters('ls_databricks_clintrail_properties_typeProperties_existingClusterId')]"
+					"ls_azure_databricks_properties_typeProperties_existingClusterId": {
+						"value": "[parameters('ls_azure_databricks_properties_typeProperties_existingClusterId')]"
 					},
 					"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 						"value": "[parameters('ls_sqlserver_multiple_db_properties_typeProperties_server')]"

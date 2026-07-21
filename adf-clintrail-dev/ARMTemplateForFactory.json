@@ -35,9 +35,9 @@
 			"type": "string",
 			"defaultValue": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
-		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
+		"AzureKeyVault_datbricks_properties_typeProperties_baseUrl": {
 			"type": "string",
-			"defaultValue": "https://kv1-databricks.vault.azure.net/"
+			"defaultValue": "https://kv-databricks-clintrail.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"type": "string",
@@ -59,6 +59,10 @@
 			"type": "string",
 			"defaultValue": "https://stclinicaltraildev.dfs.core.windows.net/"
 		},
+		"ls_azure_databricks_properties_typeProperties_existingClusterId": {
+			"type": "string",
+			"defaultValue": "0720-155521-ynlqv44b"
+		},
 		"ls_azuresql_clintrail_properties_typeProperties_server": {
 			"type": "string",
 			"defaultValue": "sqldb-clintrail-dev.database.windows.net"
@@ -70,10 +74,6 @@
 		"ls_azuresql_clintrail_properties_typeProperties_userName": {
 			"type": "string",
 			"defaultValue": "CloudSA8224d4d2"
-		},
-		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-			"type": "string",
-			"defaultValue": "0720-091705-xcsmdxgb"
 		},
 		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 			"type": "string",
@@ -1885,6 +1885,124 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/ds_sqlserver_raw_tables')]",
 				"[concat(variables('factoryId'), '/datasets/ds_adls_targetfiles')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pl_landing_bronze_data_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup_bronze_control_table",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_sqlserver_source_table_param",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsSourceServerName": "localhost\\SQLEXPRESS",
+									"pDsSourceDatabasename": "dev_clintrail_edc_src",
+									"pDsSourceSchemaName": "edcsrcmetadata",
+									"pDsSourceTableName": "srcEdcLandToBronzeControl"
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach_Landing_File",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup_bronze_control_table",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_bronze_control_table').output.value",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Notebook_landing_bronze",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/landing_bronze_load/03_nb_landing_bronze_load",
+										"baseParameters": {
+											"Domain": {
+												"value": "@item().Domain",
+												"type": "Expression"
+											},
+											"StorageAccName": {
+												"value": "@item().StorageAccName",
+												"type": "Expression"
+											},
+											"SrcContainerName": {
+												"value": "@item().SrcContainerName",
+												"type": "Expression"
+											},
+											"TgtCatalog": {
+												"value": "@item().TgtCatalog",
+												"type": "Expression"
+											},
+											"TgtSchema": {
+												"value": "@item().TgtSchema",
+												"type": "Expression"
+											},
+											"TgtTableName": {
+												"value": "@item().TgtTableName",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_azure_databricks",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"folder": {
+					"name": "dev_clintrail/landing_bronze_load"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/ds_sqlserver_source_table_param')]",
+				"[concat(variables('factoryId'), '/linkedServices/ls_azure_databricks')]"
 			]
 		},
 		{
@@ -5763,14 +5881,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureKeyVault_databricks')]",
+			"name": "[concat(parameters('factoryName'), '/AzureKeyVault_datbricks')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"annotations": [],
 				"type": "AzureKeyVault",
 				"typeProperties": {
-					"baseUrl": "[parameters('AzureKeyVault_databricks_properties_typeProperties_baseUrl')]"
+					"baseUrl": "[parameters('AzureKeyVault_datbricks_properties_typeProperties_baseUrl')]"
 				}
 			},
 			"dependsOn": []
@@ -5846,6 +5964,30 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/ls_azure_databricks')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDatabricks",
+				"typeProperties": {
+					"domain": "https://adb-7405606945912646.6.azuredatabricks.net",
+					"accessToken": {
+						"type": "AzureKeyVaultSecret",
+						"store": {
+							"referenceName": "AzureKeyVault_datbricks",
+							"type": "LinkedServiceReference"
+						},
+						"secretName": "databricks"
+					},
+					"existingClusterId": "[parameters('ls_azure_databricks_properties_typeProperties_existingClusterId')]"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault_datbricks')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ls_azuresql_clintrail')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -5866,30 +6008,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ls_databricks_clintrail')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureDatabricks",
-				"typeProperties": {
-					"domain": "https://adb-7405604690945514.14.azuredatabricks.net",
-					"accessToken": {
-						"type": "AzureKeyVaultSecret",
-						"store": {
-							"referenceName": "AzureKeyVault_databricks",
-							"type": "LinkedServiceReference"
-						},
-						"secretName": "databricks"
-					},
-					"existingClusterId": "[parameters('ls_databricks_clintrail_properties_typeProperties_existingClusterId')]"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureKeyVault_databricks')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ls_sqlserver_multiple_db')]",
@@ -6004,56 +6122,6 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_landing_bronze_data_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup_bronze_control_table",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 3,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "ds_sqlserver_source_table_param",
-								"type": "DatasetReference",
-								"parameters": {
-									"pDsSourceServerName": "localhost\\SQLEXPRESS",
-									"pDsSourceDatabasename": "dev_clintrail_edc_src",
-									"pDsSourceSchemaName": "edcsrcmetadata",
-									"pDsSourceTableName": "srcEdcLandToBronzeControl"
-								}
-							},
-							"firstRowOnly": false
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"folder": {
-					"name": "dev_clintrail/landing_bronze_load"
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/ds_sqlserver_source_table_param')]"
-			]
 		}
 	]
 }

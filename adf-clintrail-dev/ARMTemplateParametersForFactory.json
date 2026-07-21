@@ -26,8 +26,8 @@
 		"AzureKeyVault_SQLServer_properties_typeProperties_baseUrl": {
 			"value": "https://kv1-clintrail-dev.vault.azure.net/"
 		},
-		"AzureKeyVault_databricks_properties_typeProperties_baseUrl": {
-			"value": "https://kv1-databricks.vault.azure.net/"
+		"AzureKeyVault_datbricks_properties_typeProperties_baseUrl": {
+			"value": "https://kv-databricks-clintrail.vault.azure.net/"
 		},
 		"SqlServerdb_onpremises_Bhagya_db_properties_typeProperties_server": {
 			"value": "localhost\\SQLEXPRESS"
@@ -44,6 +44,9 @@
 		"ls_adls_gen2_properties_typeProperties_url": {
 			"value": "https://stclinicaltraildev.dfs.core.windows.net/"
 		},
+		"ls_azure_databricks_properties_typeProperties_existingClusterId": {
+			"value": "0720-155521-ynlqv44b"
+		},
 		"ls_azuresql_clintrail_properties_typeProperties_server": {
 			"value": "sqldb-clintrail-dev.database.windows.net"
 		},
@@ -52,9 +55,6 @@
 		},
 		"ls_azuresql_clintrail_properties_typeProperties_userName": {
 			"value": "CloudSA8224d4d2"
-		},
-		"ls_databricks_clintrail_properties_typeProperties_existingClusterId": {
-			"value": "0720-091705-xcsmdxgb"
 		},
 		"ls_sqlserver_multiple_db_properties_typeProperties_server": {
 			"value": "localhost\\SQLEXPRESS"
