@@ -342,7 +342,7 @@
 									"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlSchemaName,\n    '] WHERE Enabled = ''True'''\n)",
 									"type": "Expression"
 								},
-								"queryTimeout": "02:00:00",
+								"queryTimeout": "00:03:00",
 								"partitionOption": "None"
 							},
 							"dataset": {
