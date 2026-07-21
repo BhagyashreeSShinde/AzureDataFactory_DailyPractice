@@ -726,6 +726,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "SqlServerSource",
+								"sqlReaderQuery": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pSchemaName,\n    '].[', \n    pipeline().parameters.pTableName,\n    '] WHERE Enabled = ''True'''\n)\n",
 								"queryTimeout": "02:00:00",
 								"partitionOption": "None"
 							},
@@ -733,10 +734,22 @@
 								"referenceName": "ds_SqlServerTablesParam",
 								"type": "DatasetReference",
 								"parameters": {
-									"pDsServerName": "localhost\\SQLEXPRESS",
-									"pDsDatabaseName": "dev_clintrail_edc_src",
-									"pDsSchemaName": "edcsrcmetadata",
-									"pDsTableName": "srcEdcClintrailToLandControl"
+									"pDsServerName": {
+										"value": "@pipeline().parameters.pServerName",
+										"type": "Expression"
+									},
+									"pDsDatabaseName": {
+										"value": "@pipeline().parameters.pDatabasename",
+										"type": "Expression"
+									},
+									"pDsSchemaName": {
+										"value": "@pipeline().parameters.pSchemaName",
+										"type": "Expression"
+									},
+									"pDsTableName": {
+										"value": "@pipeline().parameters.pTableName",
+										"type": "Expression"
+									}
 								}
 							},
 							"firstRowOnly": false
@@ -968,6 +981,24 @@
 				],
 				"policy": {
 					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pDatabasename": {
+						"type": "string",
+						"defaultValue": "dev_clintrail_edc_src"
+					},
+					"pSchemaName": {
+						"type": "string",
+						"defaultValue": "edcsrcmetadata"
+					},
+					"pTableName": {
+						"type": "string",
+						"defaultValue": "srcEdcClintrailToLandControl"
+					}
 				},
 				"folder": {
 					"name": "dev_clintrail/source_landing_load"
