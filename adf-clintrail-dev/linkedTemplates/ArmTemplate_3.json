@@ -404,36 +404,36 @@
 									"typeProperties": {
 										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/bronze_silver_load/nb_bronze_silver_load",
 										"baseParameters": {
-											"BusinessKey": {
-												"value": "@item().BusinessKey",
-												"type": "Expression"
-											},
-											"Domain": {
+											"domain": {
 												"value": "@item().Domain",
 												"type": "Expression"
 											},
-											"SrcCatalog": {
+											"srcCatalog": {
 												"value": "@item().SrcCatalog",
 												"type": "Expression"
 											},
-											"SrcSchema": {
+											"srcSchema": {
 												"value": "@item().SrcSchema",
 												"type": "Expression"
 											},
-											"SrcTableName": {
+											"srcTableName": {
 												"value": "@item().SrcTableName",
 												"type": "Expression"
 											},
-											"TgtCatalog": {
+											"tgtCatalog": {
 												"value": "@item().TgtCatalog",
 												"type": "Expression"
 											},
-											"TgtSchema": {
+											"tgtSchema": {
 												"value": "@item().TgtSchema",
 												"type": "Expression"
 											},
-											"TgtTableName": {
+											"tgtTableName": {
 												"value": "@item().TgtTableName",
+												"type": "Expression"
+											},
+											"businessKey": {
+												"value": "@item().BusinessKey",
 												"type": "Expression"
 											}
 										}
