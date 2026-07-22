@@ -112,7 +112,7 @@
 										"type": "Expression"
 									},
 									"businessKey": {
-										"value": "@item().ScdType",
+										"value": "@item().BusinessKey",
 										"type": "Expression"
 									}
 								}
