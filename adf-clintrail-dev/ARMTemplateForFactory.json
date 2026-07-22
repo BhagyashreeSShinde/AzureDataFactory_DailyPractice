@@ -2152,6 +2152,7 @@
 								"value": "@activity('Lookup_bronze_control_table').output.value",
 								"type": "Expression"
 							},
+							"isSequential": true,
 							"activities": [
 								{
 									"name": "Notebook_landing_bronze",
@@ -2168,27 +2169,27 @@
 									"typeProperties": {
 										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/landing_bronze_load/03_nb_landing_bronze_load",
 										"baseParameters": {
-											"Domain": {
+											"domain": {
 												"value": "@item().Domain",
 												"type": "Expression"
 											},
-											"StorageAccName": {
+											"storageAccName": {
 												"value": "@item().StorageAccName",
 												"type": "Expression"
 											},
-											"SrcContainerName": {
+											"srcContainerName": {
 												"value": "@item().SrcContainerName",
 												"type": "Expression"
 											},
-											"TgtCatalog": {
+											"tgtCatalog": {
 												"value": "@item().TgtCatalog",
 												"type": "Expression"
 											},
-											"TgtSchema": {
+											"tgtSchema": {
 												"value": "@item().TgtSchema",
 												"type": "Expression"
 											},
-											"TgtTableName": {
+											"tgtTableName": {
 												"value": "@item().TgtTableName",
 												"type": "Expression"
 											}
