@@ -898,7 +898,7 @@
 							"source": {
 								"type": "SqlServerSource",
 								"sqlReaderQuery": {
-									"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlTableName,\n    '] WHERE Enabled = ''True'''\n)",
+									"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlTableName,\n    '] WHERE entityType = ''dimension'''\n)",
 									"type": "Expression"
 								},
 								"queryTimeout": "00:03:00",
@@ -930,10 +930,8 @@
 						}
 					},
 					{
-						"name": "ForEach_Domain_table",
+						"name": "ForEach_Silver_gold",
 						"type": "ForEach",
-						"state": "Inactive",
-						"onInactiveMarkAs": "Succeeded",
 						"dependsOn": [
 							{
 								"activity": "Lookup_silver_gold_control_tab",
@@ -945,30 +943,26 @@
 						"userProperties": [],
 						"typeProperties": {
 							"items": {
-								"value": "@activity('Lookup_bronze_silver_control_tab').output.value",
+								"value": "@activity('Lookup_silver_gold_control_tab').output.value",
 								"type": "Expression"
 							},
 							"isSequential": true,
 							"activities": [
 								{
-									"name": "Notebook_Domain",
+									"name": "Notebook_dim",
 									"type": "DatabricksNotebook",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
-										"retry": 0,
+										"retry": 3,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/bronze_silver_load/nb_bronze_silver_load",
+										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/silver_gold_load/nb_gold_dimensions",
 										"baseParameters": {
-											"domain": {
-												"value": "@item().Domain",
-												"type": "Expression"
-											},
 											"srcCatalog": {
 												"value": "@item().SrcCatalog",
 												"type": "Expression"
@@ -995,6 +989,10 @@
 											},
 											"businessKey": {
 												"value": "@item().BusinessKey",
+												"type": "Expression"
+											},
+											"scdType": {
+												"value": "@item().ScdType",
 												"type": "Expression"
 											}
 										}
@@ -1030,7 +1028,7 @@
 					}
 				},
 				"folder": {
-					"name": "dev_clintrail/silver_gold_load"
+					"name": "dev_clintrail/silver_gold_dim_load"
 				},
 				"annotations": []
 			},
