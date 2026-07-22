@@ -17,10 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": {
-							"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pPlSchemaName,\n    '].[', \n    pipeline().parameters.pPlTableName,\n    '] WHERE entityType = ''dimension'''\n)",
-							"type": "Expression"
-						},
+						"sqlReaderQuery": "@concat(\n    'SELECT * FROM ',\n    '[', pipeline().parameters.pPlSchemaName, '].[',\n    pipeline().parameters.pPlTableName, '] ',\n    'WHERE entityType = ''dimension'''\n)\n",
 						"queryTimeout": "00:03:00",
 						"partitionOption": "None"
 					},
@@ -66,7 +63,7 @@
 						"value": "@activity('Lookup_silver_gold_control_tab').output.value",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
 					"activities": [
 						{
 							"name": "Notebook_dim",
