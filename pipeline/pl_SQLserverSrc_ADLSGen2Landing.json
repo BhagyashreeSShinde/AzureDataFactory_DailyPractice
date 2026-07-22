@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pSchemaName,\n    '].[', \n    pipeline().parameters.pTableName,\n    '] WHERE Enabled = ''True'''\n)\n",
+						"sqlReaderQuery": {
+							"value": "@concat(\n    'SELECT * FROM [',\n    pipeline().parameters.pSchemaName,\n    '].[', \n    pipeline().parameters.pTableName,\n    '] WHERE Enabled = ''True'''\n)\n",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -47,7 +50,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach_sql_adls",
 				"type": "ForEach",
 				"dependsOn": [
 					{
