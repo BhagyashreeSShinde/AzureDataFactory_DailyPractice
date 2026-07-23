@@ -69,7 +69,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Notebook_dim",
+							"name": "Notebook_fact",
 							"type": "DatabricksNotebook",
 							"dependsOn": [],
 							"policy": {
