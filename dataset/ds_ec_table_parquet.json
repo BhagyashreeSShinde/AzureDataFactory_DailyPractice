@@ -1,6 +1,10 @@
 {
 	"name": "ds_ec_table_parquet",
 	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_azuresql_clintrail",
+			"type": "LinkedServiceReference"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": []
