@@ -3332,7 +3332,7 @@
 							"source": {
 								"type": "SqlServerSource",
 								"sqlReaderQuery": {
-									"value": "@concat(\n    'SELECT * FROM ',\n    '[', pipeline().parameters.pPlSchemaName, '].[',\n    pipeline().parameters.pPlTableName, '] ',\n    'WHERE entityType = ''dimension'''\n)\n",
+									"value": "@concat('SELECT * FROM [',pipeline().parameters.pPlSchemaName,\n        '].[', pipeline().parameters.pPlTableName,\n        '] WHERE EntityType = ''dimension''')",
 									"type": "Expression"
 								},
 								"queryTimeout": "00:03:00",
@@ -3380,7 +3380,7 @@
 								"value": "@activity('Lookup_silver_gold_control_tab').output.value",
 								"type": "Expression"
 							},
-							"isSequential": false,
+							"isSequential": true,
 							"activities": [
 								{
 									"name": "Notebook_dim",
@@ -4359,6 +4359,89 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Parquet_ec')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gen2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "EC_20260721095357.parquet",
+						"folderPath": "parquet",
+						"fileSystem": "cr-clintrail"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "STUDYID",
+						"type": "UTF8"
+					},
+					{
+						"name": "DOMAIN",
+						"type": "UTF8"
+					},
+					{
+						"name": "USUBJID",
+						"type": "UTF8"
+					},
+					{
+						"name": "ECSEQ",
+						"type": "INT32"
+					},
+					{
+						"name": "ECTRT",
+						"type": "UTF8"
+					},
+					{
+						"name": "ECDOSE",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 2
+					},
+					{
+						"name": "ECDOSU",
+						"type": "UTF8"
+					},
+					{
+						"name": "ECROUTE",
+						"type": "UTF8"
+					},
+					{
+						"name": "ECSTDTC",
+						"type": "DATE"
+					},
+					{
+						"name": "ECENDTC",
+						"type": "DATE"
+					},
+					{
+						"name": "VISITNUM",
+						"type": "DECIMAL",
+						"precision": 5,
+						"scale": 1
+					},
+					{
+						"name": "VISIT",
+						"type": "UTF8"
+					},
+					{
+						"name": "MODIFIED_TS",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gen2')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ds_SqlServerTablesParam')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -5233,6 +5316,81 @@
 					"schema": "RAW",
 					"table": "raw_patients"
 				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_azuresql_clintrail')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_ec_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_adls_gen2",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "targetfiles",
+						"fileSystem": "cr-sink-clintrail"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "sale_id",
+						"type": "String"
+					},
+					{
+						"name": "product",
+						"type": "String"
+					},
+					{
+						"name": "category",
+						"type": "String"
+					},
+					{
+						"name": "quantity",
+						"type": "String"
+					},
+					{
+						"name": "price",
+						"type": "String"
+					},
+					{
+						"name": "sale_date",
+						"type": "String"
+					},
+					{
+						"name": "region",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_adls_gen2')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ds_ec_table_parquet')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_azuresql_clintrail",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/ls_azuresql_clintrail')]"
