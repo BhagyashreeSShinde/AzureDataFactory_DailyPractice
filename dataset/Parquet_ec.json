@@ -1,0 +1,78 @@
+{
+	"name": "Parquet_ec",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_adls_gen2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "EC_20260721095357.parquet",
+				"folderPath": "parquet",
+				"fileSystem": "cr-clintrail"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "STUDYID",
+				"type": "UTF8"
+			},
+			{
+				"name": "DOMAIN",
+				"type": "UTF8"
+			},
+			{
+				"name": "USUBJID",
+				"type": "UTF8"
+			},
+			{
+				"name": "ECSEQ",
+				"type": "INT32"
+			},
+			{
+				"name": "ECTRT",
+				"type": "UTF8"
+			},
+			{
+				"name": "ECDOSE",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "ECDOSU",
+				"type": "UTF8"
+			},
+			{
+				"name": "ECROUTE",
+				"type": "UTF8"
+			},
+			{
+				"name": "ECSTDTC",
+				"type": "DATE"
+			},
+			{
+				"name": "ECENDTC",
+				"type": "DATE"
+			},
+			{
+				"name": "VISITNUM",
+				"type": "DECIMAL",
+				"precision": 5,
+				"scale": 1
+			},
+			{
+				"name": "VISIT",
+				"type": "UTF8"
+			},
+			{
+				"name": "MODIFIED_TS",
+				"type": "INT96"
+			}
+		]
+	}
+}
