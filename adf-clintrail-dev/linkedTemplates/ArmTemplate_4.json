@@ -315,6 +315,168 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pl_silver_gold_data_fact_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Lookup_silver_gold_control_tab",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": {
+									"value": "@concat('SELECT * FROM [',pipeline().parameters.pPlSchemaName,\n        '].[', pipeline().parameters.pPlTableName,\n        '] WHERE EntityType = ''fact''')",
+									"type": "Expression"
+								},
+								"queryTimeout": "00:03:00",
+								"partitionOption": "None"
+							},
+							"dataset": {
+								"referenceName": "ds_sqlserver_source_table_param",
+								"type": "DatasetReference",
+								"parameters": {
+									"pDsSourceServerName": {
+										"value": "@pipeline().parameters.pPlServerName",
+										"type": "Expression"
+									},
+									"pDsSourceDatabasename": {
+										"value": "@pipeline().parameters.pPlDatabaseName",
+										"type": "Expression"
+									},
+									"pDsSourceSchemaName": {
+										"value": "@pipeline().parameters.pPlSchemaName",
+										"type": "Expression"
+									},
+									"pDsSourceTableName": {
+										"value": "@pipeline().parameters.pPlTableName",
+										"type": "Expression"
+									}
+								}
+							},
+							"firstRowOnly": false
+						}
+					},
+					{
+						"name": "ForEach_Silver_gold",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup_silver_gold_control_tab",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup_silver_gold_control_tab').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Notebook_fact",
+									"type": "DatabricksNotebook",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/silver_gold_load/nb_gold_facts",
+										"baseParameters": {
+											"entityName": {
+												"value": "@item().EntityName",
+												"type": "Expression"
+											},
+											"srcCatalog": {
+												"value": "@item().SrcCatalog",
+												"type": "Expression"
+											},
+											"srcSchema": {
+												"value": "@item().SrcSchema",
+												"type": "Expression"
+											},
+											"srcTableName": {
+												"value": "@item().SrcTableName",
+												"type": "Expression"
+											},
+											"tgtCatalog": {
+												"value": "@item().TgtCatalog",
+												"type": "Expression"
+											},
+											"tgtSchema": {
+												"value": "@item().TgtSchema",
+												"type": "Expression"
+											},
+											"tgtTableName": {
+												"value": "@item().TgtTableName",
+												"type": "Expression"
+											},
+											"businessKey": {
+												"value": "@item().BusinessKey",
+												"type": "Expression"
+											},
+											"eventDateCol": {
+												"value": "@item().EventDateCol",
+												"type": "Expression"
+											}
+										}
+									},
+									"linkedServiceName": {
+										"referenceName": "ls_azure_databricks",
+										"type": "LinkedServiceReference"
+									}
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"parameters": {
+					"pPlServerName": {
+						"type": "string",
+						"defaultValue": "localhost\\SQLEXPRESS"
+					},
+					"pPlDatabaseName": {
+						"type": "string",
+						"defaultValue": "dev_clintrail_edc_src"
+					},
+					"pPlSchemaName": {
+						"type": "string",
+						"defaultValue": "edcsrcmetadata"
+					},
+					"pPlTableName": {
+						"type": "string",
+						"defaultValue": "srcEdcSilverToGoldControl"
+					}
+				},
+				"folder": {
+					"name": "dev_clintrail/silver_gold_fact_load"
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_silver_gold_data_load')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1333,172 +1495,6 @@
 				},
 				"annotations": [],
 				"lastPublishTime": "2026-07-08T07:54:03Z"
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/pl_silver_gold_data_fact_load')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Lookup_silver_gold_control_tab",
-						"type": "Lookup",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 3,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "SqlServerSource",
-								"sqlReaderQuery": {
-									"value": "@concat('SELECT * FROM [',pipeline().parameters.pPlSchemaName,\n        '].[', pipeline().parameters.pPlTableName,\n        '] WHERE EntityType = ''fact''')",
-									"type": "Expression"
-								},
-								"queryTimeout": "00:03:00",
-								"partitionOption": "None"
-							},
-							"dataset": {
-								"referenceName": "ds_sqlserver_source_table_param",
-								"type": "DatasetReference",
-								"parameters": {
-									"pDsSourceServerName": {
-										"value": "@pipeline().parameters.pPlServerName",
-										"type": "Expression"
-									},
-									"pDsSourceDatabasename": {
-										"value": "@pipeline().parameters.pPlDatabaseName",
-										"type": "Expression"
-									},
-									"pDsSourceSchemaName": {
-										"value": "@pipeline().parameters.pPlSchemaName",
-										"type": "Expression"
-									},
-									"pDsSourceTableName": {
-										"value": "@pipeline().parameters.pPlTableName",
-										"type": "Expression"
-									}
-								}
-							},
-							"firstRowOnly": false
-						}
-					},
-					{
-						"name": "ForEach_Silver_gold",
-						"type": "ForEach",
-						"dependsOn": [
-							{
-								"activity": "Lookup_silver_gold_control_tab",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"items": {
-								"value": "@activity('Lookup_silver_gold_control_tab').output.value",
-								"type": "Expression"
-							},
-							"isSequential": true,
-							"activities": [
-								{
-									"name": "Notebook_dim",
-									"type": "DatabricksNotebook",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 3,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/silver_gold_load/nb_gold_facts",
-										"baseParameters": {
-											"srcCatalog": {
-												"value": "@item().SrcCatalog",
-												"type": "Expression"
-											},
-											"srcSchema": {
-												"value": "@item().SrcSchema",
-												"type": "Expression"
-											},
-											"srcTableName": {
-												"value": "@item().SrcTableName",
-												"type": "Expression"
-											},
-											"tgtCatalog": {
-												"value": "@item().TgtCatalog",
-												"type": "Expression"
-											},
-											"tgtSchema": {
-												"value": "@item().TgtSchema",
-												"type": "Expression"
-											},
-											"tgtTableName": {
-												"value": "@item().TgtTableName",
-												"type": "Expression"
-											},
-											"scdType": {
-												"value": "@item().ScdType",
-												"type": "Expression"
-											},
-											"businessKey": {
-												"value": "@item().BusinessKey",
-												"type": "Expression"
-											},
-											"entityName": {
-												"value": "@item().EntityName",
-												"type": "Expression"
-											},
-											"eventDateCol": {
-												"value": "@item().EventDateCol",
-												"type": "Expression"
-											}
-										}
-									},
-									"linkedServiceName": {
-										"referenceName": "ls_azure_databricks",
-										"type": "LinkedServiceReference"
-									}
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {}
-				},
-				"parameters": {
-					"pPlServerName": {
-						"type": "string",
-						"defaultValue": "localhost\\SQLEXPRESS"
-					},
-					"pPlDatabaseName": {
-						"type": "string",
-						"defaultValue": "dev_clintrail_edc_src"
-					},
-					"pPlSchemaName": {
-						"type": "string",
-						"defaultValue": "edcsrcmetadata"
-					},
-					"pPlTableName": {
-						"type": "string",
-						"defaultValue": "srcEdcSilverToGoldControl"
-					}
-				},
-				"folder": {
-					"name": "dev_clintrail/silver_gold_fact_load"
-				},
-				"annotations": []
 			},
 			"dependsOn": []
 		}
