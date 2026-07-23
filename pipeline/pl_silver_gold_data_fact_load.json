@@ -83,6 +83,10 @@
 							"typeProperties": {
 								"notebookPath": "/Users/shindebhagyashree22@gmail.com/Azure_Databricks_clintrail/silver_gold_load/nb_gold_facts",
 								"baseParameters": {
+									"entityName": {
+										"value": "@item().EntityName",
+										"type": "Expression"
+									},
 									"srcCatalog": {
 										"value": "@item().SrcCatalog",
 										"type": "Expression"
@@ -107,16 +111,8 @@
 										"value": "@item().TgtTableName",
 										"type": "Expression"
 									},
-									"scdType": {
-										"value": "@item().ScdType",
-										"type": "Expression"
-									},
 									"businessKey": {
 										"value": "@item().BusinessKey",
-										"type": "Expression"
-									},
-									"entityName": {
-										"value": "@item().EntityName",
 										"type": "Expression"
 									},
 									"eventDateCol": {
